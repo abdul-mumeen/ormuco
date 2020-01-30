@@ -1,3 +1,6 @@
+import sys
+
+
 def get_max(num_one, num_two):
     return num_one if num_one > num_two else num_two
 
@@ -8,8 +11,14 @@ def get_min(num_one, num_two):
 
 def extract_values(line_values_str):
     arr_line_values = line_values_str.split()
-    first_value = int(arr_line_values[0])
-    second_value = int(arr_line_values[1])
+    try:
+        if len(arr_line_values) != 2:
+            raise ValueError
+        first_value = int(arr_line_values[0])
+        second_value = int(arr_line_values[1])
+    except:
+        sys.exit('Values entered are not in the right format!')
+
     return first_value, second_value
 
 
