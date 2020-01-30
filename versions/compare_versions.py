@@ -14,7 +14,9 @@ def compare_versions(first_version, second_version):
     first_version_subversion_len = len(first_version_num_list)
     second_version_subversion_len = len(second_version_num_list)
 
-    loop_len = first_version_subversion_len if first_version_subversion_len > second_version_subversion_len else second_version_subversion_len
+    loop_len = first_version_subversion_len if (
+        first_version_subversion_len > second_version_subversion_len
+    ) else second_version_subversion_len
     state = 0
     for i in range(loop_len):
         try:
@@ -22,19 +24,28 @@ def compare_versions(first_version, second_version):
         except ValueError:
             return f'Invalid version supplied: {first_version}'
         except IndexError:
-            if second_version_num_list[i].isdigit():
+            overflow = ''.join(second_version_num_list[i:])
+            if not overflow.isdigit():
+                return f'Invalid version supplied: {second_version}'
+            elif int(overflow) != 0:
                 state = -1
                 break
             else:
-                return f'Invalid version supplied: {second_version}'
+                break
 
         try:
             sv_value = int(second_version_num_list[i])
         except ValueError:
             return f'Invalid version supplied: {second_version}'
         except IndexError:
-            state = 1
-            break
+            overflow = ''.join(first_version_num_list[i:])
+            if not overflow.isdigit():
+                return f'Invalid version supplied: {first_version}'
+            elif int(overflow) != 0:
+                state = 1
+                break
+            else:
+                break
 
         if (fv_value != sv_value):
             state = 1 if fv_value > sv_value else -1
