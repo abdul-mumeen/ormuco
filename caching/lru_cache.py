@@ -1,12 +1,32 @@
+import uuid
 from caching.data_entry import Entry
 
 
 class LRUCache:
-    def __init__(self, size=None):
+    def __init__(self, location, size=None):
         self._start = None
         self._end = None
         self._hash_map = {}
         self._size = size if size else 3
+        self._is_expired = False
+        self._location = location
+        self._id = uuid.uuid4()
+
+    @property
+    def id(self):
+        return self._id
+
+    @property
+    def is_expired(self):
+        return self._is_expired
+
+    @property
+    def location(self):
+        return self._location
+
+    @location.setter
+    def location(self, value):
+        self._location = value
 
     @property
     def least_recently_used(self):
@@ -15,6 +35,12 @@ class LRUCache:
     @property
     def most_recently_used(self):
         return self._start
+
+    def activate(self):
+        self._is_expired = False
+
+    def deactivate(self):
+        self._is_expired = True
 
     def _move_entry_to_top(self, entry):
         if self._start:
@@ -41,7 +67,7 @@ class LRUCache:
             self._remove_entry(entry)
             self._move_entry_to_top(entry)
             return entry.value
-        return 'Not found, go fetch at store'
+        return None
 
     def addEntry(self, key, value):
         if key in self._hash_map:
@@ -60,3 +86,8 @@ class LRUCache:
             else:
                 self._move_entry_to_top(entry)
             self._hash_map[entry.key] = entry
+
+    def update_cache_from(cache):
+        location = self._location
+        self = cache
+        self._location = location

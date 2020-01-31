@@ -1,10 +1,12 @@
 import unittest
 from caching.lru_cache import LRUCache
+from caching.data_manager import Location
 
 
 class TestLRUCache(unittest.TestCase):
     def test_lru_cache(self):
-        lru_cache = LRUCache(2)
+        location = Location(1, 3)
+        lru_cache = LRUCache(location, 2)
         lru_cache.addEntry(1, 'This is the first entry')
         value = lru_cache.getEntry(1)
         self.assertEqual(value, 'This is the first entry')
@@ -26,4 +28,4 @@ class TestLRUCache(unittest.TestCase):
         self.assertEqual(value, 'Three is a charm')
 
         value = lru_cache.getEntry(1)
-        self.assertEqual(value, 'Not found, go fetch at store')
+        self.assertEqual(value, None)
