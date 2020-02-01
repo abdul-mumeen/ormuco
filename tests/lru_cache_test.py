@@ -5,6 +5,7 @@ from caching.data_manager import Location
 
 class TestLRUCache(unittest.TestCase):
     def test_lru_cache(self):
+        """Test LRU cache functionality"""
         location = Location(1, 3)
         lru_cache = LRUCache(location, 2)
         lru_cache.addEntry(1, 'This is the first entry')
