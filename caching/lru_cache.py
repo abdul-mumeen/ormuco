@@ -64,8 +64,9 @@ class LRUCache:
     def getEntry(self, key):
         if key in self._hash_map:
             entry = self._hash_map.get(key)
-            self._remove_entry(entry)
-            self._move_entry_to_top(entry)
+            if entry.left != None:
+                self._remove_entry(entry)
+                self._move_entry_to_top(entry)
             return entry.value
         return None
 
@@ -73,8 +74,9 @@ class LRUCache:
         if key in self._hash_map:
             self._hash_map[key].value = value
             entry = self._hash_map.get(key)
-            self._remove_entry(entry)
-            self._move_entry_to_top(entry)
+            if entry.left != None:
+                self._remove_entry(entry)
+                self._move_entry_to_top(entry)
         else:
             entry = Entry()
             entry.key = key
@@ -87,7 +89,7 @@ class LRUCache:
                 self._move_entry_to_top(entry)
             self._hash_map[entry.key] = entry
 
-    def update_cache_from(cache):
-        location = self._location
-        self = cache
-        self._location = location
+    def update_cache_from(self, cache):
+        self._start = cache._start
+        self._end = cache._end
+        self._hash_map = cache._hash_map

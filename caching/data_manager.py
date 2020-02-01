@@ -22,17 +22,21 @@ class PriorityQueue:
     def empty(self):
         return len(self.caches) == 0
 
-    def put(self, cache, priority):
-        heapq.heappush(self.caches, (priority, cache))
+    def put(self, cache, priority, counter):
+        heapq.heappush(self.caches, (priority, counter, cache))
 
     def get(self):
-        return heapq.heappop(self.caches)[1]
+        return heapq.heappop(self.caches)[2]
 
 
 class DataManager:
     def __init__(self, array_caches, database):
         self._caches_dict = {cache.id: cache for cache in array_caches}
         self._database = database
+
+    @property
+    def caches(self):
+        return self._caches_dict
 
     def _replicate_update(self, cache):
         for i, cache_item in self._caches_dict.items():
@@ -45,15 +49,17 @@ class DataManager:
     def _get_data_from_database(self, key):
         return self._database.get(key)
 
-    def _heuristic_distance(user_location, cache_location):
+    def _heuristic_distance(self, user_location, cache_location):
         return abs(user_location.x - cache_location.x) + abs(user_location.y -
                                                              cache_location.y)
 
     def _get_closest_caches(self, user_location):
         closest_caches = PriorityQueue()
+        counter = 0
         for cache in self._caches_dict.values():
             distance = self._heuristic_distance(user_location, cache.location)
-            closest_caches.put(cache, distance)
+            closest_caches.put(cache, distance, counter)
+            counter += 1
         return closest_caches
 
     def getData(self, key, user_location):
